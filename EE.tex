@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{indentfirst}
+\usepackage{anyfontsize}
+
+%\usepackage[natbibapa]{apacite}
+\usepackage[utf8x]{inputenc}
+%\usepackage{natbib}
+
+
+\geometry{letterpaper, portrait, margin=1in}
+\parindent = 0.5in
+
+\definecolor{codegray}{rgb}{0.2,0.2,0.2}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{scheme}{
+    backgroundcolor=\color{backcolor},   
+    commentstyle=\color{blue},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    morekeywords={*,...},
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=t,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    title=\lstname,
+    language=Python
+}
+
+\lstset{style=scheme}
+
+\doublespace
+ \title{The use of reaction  equations for the simulation of physical phenomena}
+\author{Simon Abrelat}
+\date{\vspace{-5ex}}
+
+\begin{document}
+\large
+{
+\fontsize{12}{14.4}
+    {
+    	\singlespace
+    	\pagenumbering{gobble}
+    	\maketitle
+    	\begin{center}
+    	\vspace{4mm}
+    	002129-0004 \\
+    	\vspace{4mm}
+    	Math HL IA \\
+    	\vspace{4mm}
+   	 May 2019 \\
+    	\vspace{4mm}
+    	Words: \\
+    	\end{center}
+    }
+}
+\newpage
+
+\begin{abstract}
+Tis but a placeholder
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage 
+
+\section{Introduction}
+Hello \cite{knuthwebsite}. \cite{einstein} \cite{latexcompanion}
+asjkldf \cite{TEST2}
+\section{Calculus}
+\section{Diffusion}
+\section{Reaction}
+\section{Reaction Diffusion}
+\section{References}
+\newpage
+\section{Appedix}
+\lstinputlisting[language=Python, caption=Diffusion]{code/diffusion.py}
+\renewcommand\refname{Bibliography}
+
+\bibliographystyle{apalike}
+\bibliography{EE} 
+\end{document}
