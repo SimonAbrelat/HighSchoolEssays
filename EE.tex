@@ -1,80 +1,78 @@
-\documentclass{article}
-\usepackage[english]{babel}
+\documentclass[12pt]{article}
 \usepackage{color}
-\usepackage{listings}
 \usepackage{parskip}
-\usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
 \usepackage{setspace}
 \usepackage{geometry}
+\usepackage{dirtytalk}
 \usepackage{indentfirst}
 \usepackage{anyfontsize}
+\usepackage[utf8]{inputenc}
 
-%\usepackage[natbibapa]{apacite}
-\usepackage[utf8x]{inputenc}
-%\usepackage{natbib}
-
+\usepackage{natbib}
 
 \geometry{letterpaper, portrait, margin=1in}
-\parindent = 0.5in
+\parindent=0.5in
 
 \definecolor{codegray}{rgb}{0.2,0.2,0.2}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolor}{rgb}{0.95,0.95,0.92}
 
-\lstdefinestyle{scheme}{
-    backgroundcolor=\color{backcolor},   
-    commentstyle=\color{blue},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\footnotesize\ttfamily,
-    morekeywords={*,...},
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=t,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2,
-    title=\lstname,
-    language=Python
+\lstdefinestyle{scheme}
+  {backgroundcolor=\color{backcolor},   
+  commentstyle=\color{blue},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\footnotesize\ttfamily,
+  morekeywords={*},
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=t,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2,
+  title=\lstname,
+  language=Python
 }
 
 \lstset{style=scheme}
 
-\doublespace
- \title{The use of reaction  equations for the simulation of physical phenomena}
+\doublespace{}
+\title{The use of reaction diffusion equations for the simulation of physical phenomena}
 \author{Simon Abrelat}
 \date{\vspace{-5ex}}
 
+\DeclareUnicodeCharacter{2212}{-}
 \begin{document}
 \large
-{
-\fontsize{12}{14.4}
-    {
-    	\singlespace
-    	\pagenumbering{gobble}
-    	\maketitle
-    	\begin{center}
-    	\vspace{4mm}
-    	002129-0004 \\
-    	\vspace{4mm}
-    	Math HL IA \\
-    	\vspace{4mm}
-   	 May 2019 \\
-    	\vspace{4mm}
-    	Words: \\
-    	\end{center}
-    }
+{\fontsize{12}{14.4}
+  {\singlespace{}
+  \pagenumbering{gobble}
+  \maketitle
+  \begin{center}
+  \vspace{4mm}
+  002129--0004 \\
+  \vspace{4mm}
+  Math HL IA \\
+  \vspace{4mm}
+  May 2019 \\
+  \vspace{4mm}
+  Words: \\
+  \end{center}
+  }
 }
 \newpage
 
 \begin{abstract}
-Tis but a placeholder
+  This is the thing working good \citep{turing}, here is another example \citep*{grayscott}
 \end{abstract}
 
 \newpage
@@ -82,18 +80,115 @@ Tis but a placeholder
 \newpage 
 
 \section{Introduction}
-Hello \cite{knuthwebsite}. \cite{einstein} \cite{latexcompanion}
-asjkldf \cite{TEST2}
+
 \section{Calculus}
+Reaction diffusion relies on multivariable calculus, from the partial derivative to the laplacian
+operator that governs diffusion. Multivariable calculus is a natural extension of calculus where instead of focusing on
+the accumulation and change on 1 axis, that being y, it is possible to do in to any
+number of dimensions. This means that if your function has more than 1 input, like for 3D functions, you would
+have a new arsenal of tools and methods to analyse your equations. The most simple being the limit which
+fundamentally operates the same as in the normal case. If there is a hole in the function but otherwise is
+continuous, it would \say{fill in} that hole, and if there is a jump discontinuity the limit is defined some
+certain directions but the limit itself is undefined. Once again using the concept of limits we can get the
+integral and derivative as in normal calculus; however for this application we will be primarily focusing on
+partial derivatives and other related operations. Instead derivatives in in multivariate partial derivatives
+are used. These are computed in a similar form to derivatives but the input that is not differentiated is
+treated as a constant. For use in the reaction equations the partial differential equations behave in a
+similar way todifferential equations but rely on more inputs but are still the rate of change in a given input
+over a function. 
+
+\begin{gather}
+ \frac{\partial f}{\partial x} = \partial_x{f} = \lim_{h \to 0} \frac{f(x+h, y) − f(x,y)}{h} \\
+ \frac{\partial f}{\partial y} = \partial_y{f} = \lim_{h \to 0} \frac{f(x, y + h) − f(z,y)}{h}
+\end{gather}
+
+\begin{center}
+ Example problem
+ \begin{gather*}
+  f(x, y) = xy^2 + x \\
+  \partial_x f(x,y) = y^2 + 1 \\
+  \partial_y f(x,y) = 2xy
+ \end{gather*}
+\end{center}
+
+Then there are directional derivatives which are similar to the partial derivatives, but instead of being in a
+component direction like along the x  or y direction it would be in the direction of the vector $\vec{u}$ with
+components $ <a, b> $. These derivates can be done in any number of dimensions (2) but for reaction diffusion
+formulas shown 2D cases (1) matter more.
+\begin{gather}
+  D_u f = \lim_{h \to 0} \frac{f(x + ha, y+ hb) − f(x, y)}{h}  \\
+  D_u{f(\vec{x})} = \lim_{h \to 0} \frac{f(\vec{x} + hu) − f(\vec{x})}{h}
+\end{gather}
+The directional derivative can also be written as a dot products
+\begin{gather*}
+\begin{aligned}
+  D_u f(x,y) &= a\partial_x f + b\partial_y f \\
+             &= <\partial_x f, \partial_y f> * <a, b> \\
+             &= <\partial_x f, \partial_y f> * u \\
+             &= \nabla f(x,y) * u 
+\end{aligned}
+\end{gather*}
+
+This $\nabla$, or nabla, is the sign for the grad operator read \say{del f} This represents a vector of all
+of the partial derivatives that are possible in a function called the gradient. For example in $g(x, y, z)$,
+grad g= the partial derivative of g in respect to x, y, and z. This gradient shoulds the direction of the
+fastest increase of the function. So if we had a map of a mountain range the gradient of the map from a
+point would be the fastest way to get to the top of the nearest mountain but not necessarily the highest
+mountain. The gradient is often used for optimization problems since it can go \say{the highest} or most
+optimal local  point in a function of any number of variables. A common abuse of notation is to set $\nabla$
+to a value (3)
+\begin{gather}
+  \nabla = <\frac{\partial}{\partial x}, \frac{\partial}{\partial y}, \frac{\partial}{\partial z}>
+\end{gather}
+
+So the notation for the gradient makes since because you would be treating the function f as a scalar and
+multiplying it to the $\nabla$ vector. This abuse of notation since it would also make sense for the
+divergence of a vector field. For a vector field the function F (4) would be a vector function where you could
+dot product of F and $\nabla$ (5) 
+\begin{gather}
+  \bold{F} = P\hat{\imath} + Q\hat{\jmath} + R\hat{k} \\
+  div \bold{F} = \nabla * \bold{F} = \frac{\partial P}{\partial x} + \frac{\partial Q}{\partial y} + \frac{\partial R}{\partial z} 
+\end{gather}
+
+One can picture a vector field as being a model of fluid flow, where the vector at a point would be the
+velocity of the fluid. Given this analogy, the divergence if the fluid is incompressible then the amount of
+fluid that emanates from a point. In a vector field that would represented by all of the arrows pointing away
+from a point and the arrows get larger around a point then the divergence $>$ 0 and if the arrows are smaller
+or point inwards than the divergence $<$ 0. Both of these tools are useful but when applied together become
+what is needed for the diffusion part of reaction diffusion that being the laplacian. The laplacian is the
+divergence of the gradient of a function.
+
+\begin{center}
+Laplacian = $\nabla * (\nabla f) = \nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2
+f}{\partial y^2} \frac{\partial^2 f}{\partial z^2} = \sum_{i=1}^{n} \frac{\partial^2 f}{\partial x_i^2}$ \quad
+$\nabla^2 = \nabla * \nabla$
+\end{center}
+
+This is called the Laplace operator or the Laplacian of a field because of its relation to Laplace's
+Equation which has similarities to the heat transfer equation for diffusion. The reason that when put in
+PDEs they exhibit this diffusion or spreading properly is due to their relation to the second derivative in
+normal calculus. They identify local maxima and minima but in normal calculus where the second derivative is
+0 in both cases the laplacian is highly positive in minima and highly negative in maxima. In the case of
+PDEs, that would mean that the values would \say{move away} from maxima and \say{fill in} minima which exactly
+describes osmosis and other diffusion systems.
+
+\begin{center}
+Laplace's Equation: $\nabla^2 \bold{F} = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial
+y^2} + \frac{\partial^2 f}{\partial z^2} = 0$
+\end{center}
+
+Equations that satisfies Laplace's Equation are called harmonic functions where at all points the value of
+the laplacian = 0 
+
 \section{Diffusion}
 \section{Reaction}
 \section{Reaction Diffusion}
 \section{References}
+\bibliographystyle{apa}
+\bibliography{EE}
 \newpage
 \section{Appedix}
 \lstinputlisting[language=Python, caption=Diffusion]{code/diffusion.py}
-\renewcommand\refname{Bibliography}
-
-\bibliographystyle{apalike}
-\bibliography{EE} 
+\lstinputlisting[language=Python, caption={Lotka-Volterra}]{code/lotkaVolterra.py}
+\lstinputlisting[language=Python, caption=SIR]{code/SIR.py}
 \end{document}

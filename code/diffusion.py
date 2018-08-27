@@ -1,14 +1,14 @@
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 # Simulation constants
 alpha = 0.00001  # Laplician multiplier
-dx = 0.01  # Simulation speed/accuracy
 n = 2000  # number of iterations
+s = 100  # size of the matrix
+dx = 2/s  # Simulation speed/accuracy
 
 # Matrix initialization
-M = np.empty((100, 100))
+M = np.empty((s, s))
 M.fill(0)
 x, y = M.shape
 # Hotspot Seeding
