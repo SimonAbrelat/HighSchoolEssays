@@ -1,18 +1,31 @@
-from mpl_toolkits.mplot3d import axes3d
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-from matplotlib import cm
 
-X, Y, Z = axes3d.get_test_data(0.2)
 
-# Normalize to [0,1]
-Z = (Z-Z.min())/(Z.max()-Z.min())
+def fun(x, y):
+    return x*(y**2) + y
 
-colors = cm.viridis(Z)
-rcount, ccount, _ = colors.shape
+
+def dy(x, y):
+    return 2*x*y
+
+
+def dx(x, y):
+    return 2*y+1
+
 
 fig = plt.figure()
-ax = fig.gca(projection='3d')
-surf = ax.plot_surface(X, Y, Z, rcount=rcount, ccount=ccount,
-                       facecolors=colors, shade=False)
-surf.set_facecolor((0,0,0,0))
+ax = fig.add_subplot(111, projection='3d')
+x = y = np.arange(-2.0, 2.0, 0.01)
+X, Y = np.meshgrid(x, y)
+zs = np.array([dx(x, y) for x, y in zip(np.ravel(X), np.ravel(Y))])
+Z = zs.reshape(X.shape)
+
+ax.plot_surface(X, Y, Z)
+
+ax.set_xlabel('X Label')
+ax.set_ylabel('Y Label')
+ax.set_zlabel('Z Label')
+
 plt.show()

@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 
 # Model params
-b = 1/2  # days of contact to spread
-k = 1/4  # days to recover
+b = 1  # days of contact to spread
+k = 1/6  # days to recover
 
 # Simulation params
 dt = 0.1  # change in time
-n = 1400  # number of iterations
+n = 800  # number of iterations
 
 # Seeding
 s = 1  # suseptible population

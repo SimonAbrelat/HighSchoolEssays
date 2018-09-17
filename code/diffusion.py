@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 # Simulation constants
 alpha = 0.00001  # Laplician multiplier
-n = 2000  # number of iterations
+n = 8000  # number of iterations
 s = 100  # size of the matrix
 dx = 2/s  # Simulation speed/accuracy
 
