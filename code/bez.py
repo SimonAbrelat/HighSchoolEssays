@@ -74,7 +74,7 @@ if __name__ == "__main__":
     cX = Cubic(xps[0], xps[1], xps[2], xps[3])
     cY = Cubic(yps[0], yps[1], yps[2], yps[3])
 
-    n = Cubic254(Pose(0,0,ma.pi/2), Pose(1,1,0))
+    n = Cubic254(Pose(0,0,ma.pi/2), Pose(1.5,1,ma.pi/2))
 
     for i in np.linspace(0, 1, 100): 
         cx.append(cX.apply(i))
@@ -89,10 +89,10 @@ if __name__ == "__main__":
     #     print(x[j], y[j])
 
     # plt.plot(cx, cy, 'g')
-    plt.plot(bx, by, 'b')
-    # plt.plot(px, py, 'r')
-    plt.plot(xps, yps, 'ro')
-    plt.plot(xps, yps, 'r:')
+    # plt.plot(bx, by, 'b')
+    plt.plot(px, py, 'r')
+    #plt.plot(xps, yps, 'ro')
+    #plt.plot(xps, yps, 'r:')
     plt.show()
 
     # print("Y Cos:", Y.a, Y.b, Y.c, Y.d)
