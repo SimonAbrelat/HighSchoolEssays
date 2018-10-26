@@ -54,7 +54,7 @@ if __name__ == "__main__":
     path: [CubicHermite] = []
     pos: [Pose] = [
             Pose(0, 0, ma.pi/2), 
-            Pose(1, 1, ma.pi/2), 
+            Pose(1, 1, ma.pi/2),
             Pose(0, 2, ma.pi/2)
     ]
 

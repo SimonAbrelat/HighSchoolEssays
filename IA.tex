@@ -8,6 +8,7 @@
 \usepackage{listings}
 \usepackage{setspace}
 \usepackage{geometry}
+\usepackage{enumitem}
 \usepackage{dirtytalk}
 \usepackage{subcaption}
 \usepackage{indentfirst}
@@ -105,15 +106,51 @@ on a closed interval $[a,b]$ can be approximated as closely as desired by a poly
 A Bernstein polynomial (\ref{eq:BPoly}) is defined by a linear combination of Bernstein basis functions
 (\ref{eq:BBasis}).
 
+Bernstein Polynomials:
 \begin{equation}
   \label{eq:BBasis}
-  b_\nu,n = {\nu \choose n} x^\nu (1 - x)^{\nu - n}
+  b_{\nu,n} = {n \choose \nu} x^\nu (1 - x)^{\nu - n}
 \end{equation}
 \begin{equation}
   \label{eq:BPoly}
-  B_n(x) = \sum_{\nu = 0}^{n}\beta_\nu b_\nu,n (x)
+  B_n(x) = \sum_{\nu = 0}^{n}\beta_\nu b_{\nu,n} (x)
 \end{equation}
 
+\begin{small}
+	\begin{singlespace}
+		\begin{itemize}[label=]
+    	\item $\nu$: is the predicted rate for user $x$ on item $i$
+    	\item $n$: is the rate of song $i$ given by user $k$
+		\end{itemize}
+	\end{singlespace}
+\end{small}
+
+\begin{figure}[h]
+  \caption{Basis functions for different degrees}
+  \label{fig:basis}
+  \begin{center}
+    \begin{subfigure}[b]{.45\linewidth}
+      \includegraphics[width=\linewidth]{Basis/basis2}
+      \caption{$n=2$}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\linewidth}
+      \includegraphics[width=\linewidth]{Basis/basis3}
+      \caption{$n=3$}
+    \end{subfigure}
+  \end{center}
+\end{figure}
+\begin{figure}[h]
+  \begin{center}
+    \begin{subfigure}[b]{.45\linewidth}
+      \includegraphics[width=\linewidth]{Basis/basis4}
+      \caption{$n=4$}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\linewidth}
+      \includegraphics[width=\linewidth]{Basis/basis10}
+      \caption{$n=10$}
+    \end{subfigure}
+  \end{center}
+\end{figure}
 
 \subsection{Application}
 
