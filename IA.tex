@@ -4,6 +4,7 @@
 \usepackage{parskip}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{wrapfig}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{setspace}
@@ -188,11 +189,11 @@ X and Y axes and fun De Castlejau's algorithm on the scalar x and y quantities.
 \end{singlespace}
 
 \subsection{Application}
-There are a practically infinite number of uses for B\`ezier curves. They and other similar methods are used
+There are practically infinite number of uses for B\`ezier curves. They and other similar methods are used
 to display all curves in computers which means that anything make industrially with a curve has a B\`ezier
 curve or other spline involved. However, the hidden ubiquitous use of B\`ezier curves in particular are
 fonts. All PostScript fonts, the basis of PDFs, use cubic B\`ezier curves (a) and TrueType fonts,
-abbreviated to .ttf, use quadratic curves (b).
+abbreviated to ttf, use quadratic curves (b).
 
 \begin{figure}[ht]
   \label{fig:BezierCurves1}
@@ -203,8 +204,7 @@ abbreviated to .ttf, use quadratic curves (b).
       \caption{Cubic curve, 3 control points}
     \end{subfigure}
     \begin{subfigure}[b]{.45\linewidth}
-      \includegraphics[width=\linewidth]{Bez/quadraticBez1}
-      \caption{Quadratic curve, 4 control points}
+      \includegraphics[width=\linewidth]{Bez/quadraticBez1} \caption{Quadratic curve, 4 control points}
     \end{subfigure}
   \end{center}
 \end{figure}
@@ -224,11 +224,111 @@ the control point is related to the acceleration or multiple control points. The
 used to model resistance in a parameterized manner so yet another use of B\`ezier curves would be the
 generation of an optimal airfoil \citep{bezierAirfoil}.
 
+\section{Hermite}
+
+\subsection{Theory}
+
+
+A cubic Hermite spline takes two control points and the derivatives. There are also higher order Hermite
+splines such as quintic splines that take 2 points their derivatives as well as their second derivatives. For
+this section, however, we will be focusing on cubic splines. These cubic splines have 4 basis functions much
+\begin{wrapfigure}[7]{o}{5.5cm}
+  \centering
+  \caption{Hermite Bases}
+  \label{fig:HBasisGraphs}
+  \includegraphics[width=\linewidth]{Basis/HBasis}
+  \vspace{-10pt}
+\end{wrapfigure}
+like the Bernstein basis functions for B\`ezier curves. In fact, you can express Hermite basis functions in
+terms of their Bernstein counterparts (equation~\ref{eq:BBasis}); however, a linear combination of Bernstein
+Basis functions approximates any polynomial. Two of those functions are for the points and then there are 2 
+for the derivatives.
+
+\begin{singlespace}
+  \begin{equation}
+    \begin{aligned}
+      &h_{0,0}(t) = (1+2t)(1-t)^2 = \beta_0(t) + \beta_1(t) \\
+      &h_{1,0}(t) = t(1-t)^2 = \frac{\beta_1(t)}{3}\\
+      &h_{0,1}(t) = t^2(3-2t) = \beta_2(t) + \beta_3(t)\\
+      &h_{1,1}(t) = t^2(1-t) = \frac{-\beta_2(t)}{3}
+    \end{aligned}
+  \end{equation}
+  \begin{small}
+    \begin{itemize}[label=]
+      \item $h_{0,0}$: is function for the first point
+      \item $h_{0,1}$: is function for the first derivative
+      \item $h_{1,0}$: is function for the second point
+      \item $h_{1,1}$: is function for the second derivative
+      \item $\beta_n$: Bernstein basis function with degree 3 for index $n$
+    \end{itemize}
+  \end{small}
+\end{singlespace}
+
+Another way to describe Hermite splines as well as B\`ezier curves is through matrices (\ref{eq:HMatrix}).
+These matrices are equivalent the basis functions. The benefit of using matrices is that it is easier to change
+between different types of splines for different purposes. For example if one were making a application they
+could pass in the basis matrix to generate Hermite, B\`ezier, Catmull-Rom, or other forms.
+
+\begin{equation}
+  \label{eq:HMatrix}
+  p = 
+  \begin{bmatrix}
+    s^3 & s^2 & s & 1
+  \end{bmatrix}
+  \begin{bmatrix}
+     2 & -2 &  1 &  1 \\
+    -3 &  3 & -2 & -1 \\
+     0 &  0 &  1 &  0 \\
+     1 &  0 &  0 &  0
+  \end{bmatrix}
+  \begin{bmatrix}
+    p_{n-1} \\
+    p \\
+    p_{n+1} \\
+    p_{n+2}
+  \end{bmatrix}
+\end{equation}
+
+\subsection{Application}
+Interpolating splines are useful for a host of different applications. Unlike B\`ezier curves, Hermite splines
+are not as ubiquitous, but they have more specific uses. They are often used for statistics since they can
+generate intermediate values between data points as well as being used for regression and filtering
+\citep{HRegression}. Hermite splines are also used for path generation for simple mobile or differential
+robots. In the case of \citep{HMove} they use genetic algorithms to optimize Hermite paths to simulate
+bipedal, tripedal, and \say{snake-like} motion. One of the biggest uses of Hermite splines are wavelets
+\citep{HWavelets}.
+
+\begin{figure}[ht]
+  \label{fig:wavelet}
+  \centering
+  \caption{The different Types of Wavelets}
+  \includegraphics[width=\linewidth]{wavelets}
+\end{figure}
+
+These are wavelets because of how they are not infinite like sin waves. So in signal processing there are
+Fourier Transforms which isolates the frequency and amplitude of a signal which is the global view. Wavelets
+allow one to find the local transformations such as edges or blobs. Most of the purely academic uses of
+Hermite splines are in modeling different forms of wavelets or other signal analysis. For example, in
+\citep{HBioMed} they are using wavelets for edge detection as well as for modeling the blobs, or objects that
+make said edges, to automatically analyze medical photos. As previously alluded to, these interpolating splines
+can be used for smoothing or filtering data. Hermite splines can be used to model the output of a wave
+\citep{HCardo} which is an inversion of the wavelets which take a spline and output data, these process can be
+reversed to map data to splines in signal processing.
+
+\section{Conclusion}
+B\`ezier and Hermite splines are just two examples in a sea of possible splines. These are two simple types
+that are useful for outlining the two archetypes, interpolating and weighted, while still being
+computationally simple. There are often \say{better} or more specialized splines for any given use case;
+however, that misses the point of their power and generality. The naively simple task of making an
+approximation of curve between points has much more depth than one can possibly cover. The simplicity and
+generality also explains how splines are everywhere.
+
+\newpage
 \bibliographystyle{apa}
 \bibliography{IA}
 \newpage
 \section{Appendix}
-\lstinputlisting[language=Python, label={lst:basis}, caption={Bernstein Basis Functions}]{code/basis.py}
+\lstinputlisting[language=Python, label={lst:basis}, caption={Bernstein Basis Functions}]{code/BBasis.py}
 \newpage
 \lstinputlisting[language=Python, label={lst:bez}, caption={B\`ezier Curves}]{code/bez.py}
 
