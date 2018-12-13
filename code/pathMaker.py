@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from typing import List
 import numpy as np
 import math as ma
 
@@ -49,10 +50,10 @@ def getClamped(arr, ind):
     return arr[ind]
 
 if __name__ == "__main__":
-    x: [float] = []
-    y: [float] = []
-    path: [CubicHermite] = []
-    pos: [Pose] = [
+    x: List[float] = []
+    y: List[float] = []
+    path: List[CubicHermite] = []
+    pos: List[Pose] = [
             Pose(0, 0, ma.pi/2), 
             Pose(1, 1, ma.pi/2),
             Pose(0, 2, ma.pi/2)

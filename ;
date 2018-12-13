@@ -24,8 +24,6 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolor}{rgb}{0.95,0.95,0.92}
 
-\newcommand{\sorta}[1]{\lq #1\rq \,}
-
 \lstdefinestyle{scheme}
   {backgroundcolor=\color{backcolor},
   commentstyle=\color{blue},
@@ -93,9 +91,9 @@ visualize different types of splines.
 
 \section{Introduction}
 Splines are not a specific equation. They are more a class of equations that have similar properties. They 
-are simply piecewise polynomials, and are often parameterized so that they can \sorta{loop over themselves}
-and break the vertical line test. One of the interesting aspects of splines is that they keep this
-property even at low degrees.
+are simply piecewise polynomials, and are often parameterized so that they can \lq loop over themselves\rq 
+and break the vertical line test. One of the interesting aspects of splines is that they keep this property 
+even at low degrees.
 
 
 The word spline is derived from wooden splines that curve and are often
@@ -118,25 +116,20 @@ Bernstein Polynomials:
 \begin{singlespace}
   \begin{equation}
     \label{eq:BBasis}
-    b_{\nu,n}(t) = {n \choose \nu} t^\nu (1 - t)^{n - \nu}
+    b_{\nu,n} = {n \choose \nu} x^\nu (1 - x)^{n - \nu}
   \end{equation}
   \begin{equation}
     \label{eq:BPoly}
-    B_n(t) = \sum_{\nu = 0}^{n}\beta_\nu b_{\nu,n} (t)
+    B_n(x) = \sum_{\nu = 0}^{n}\beta_\nu b_{\nu,n} (x)
   \end{equation}
-  \begin{small}  
-    \begin{itemize}[label=]
-      \item $\beta_\nu$: the control point component
-    \end{itemize}
-  \end{small}
   \begin{equation}
     \label{eq:BLimit}
     \lim_{n\to\infty} B_n(f) = f
   \end{equation}
   \begin{small}
 		\begin{itemize}[label=]
-    	\item $n$: degree of the Bernstein function
-    	\item $\nu$: number of the $n+1$ equations of a function of degree $n$ 
+    	\item $n$: is the degree of the Bernstein function
+    	\item $\nu$: is number of the $n+1$ equations of a function of degree $n$ 
 		\end{itemize}
   \end{small}
 \end{singlespace}
@@ -246,29 +239,37 @@ generation of an optimal airfoil \citep{bezierAirfoil}.
 A cubic Hermite spline takes two control points and the derivatives. There are also higher order Hermite
 splines such as quintic splines that take 2 points their derivatives as well as their second derivatives. For
 this section, however, we will be focusing on cubic splines. These cubic splines have 4 basis functions much
+\begin{wrapfigure}[7]{o}{5.5cm}
+  \centering
+  \caption{Hermite Bases \\\hspace{\textwidth} Listing~\ref{lst:HBasis}}
+  \label{fig:HBasisGraphs}
+  \includegraphics[width=\linewidth]{Basis/HBasis}
+  \vspace{-10pt}
+\end{wrapfigure}
 like the Bernstein basis functions for B\`ezier curves. In fact, you can express Hermite basis functions in
 terms of their Bernstein counterparts (equation~\ref{eq:BBasis}); however, a linear combination of Bernstein
 Basis functions approximates any polynomial. Two of those functions are for the points and then there are 2 
 for the derivatives.
 
-\begin{figure}[!h]
-  \centering
-  \caption{Hermite Bases, Listing~\ref{lst:HBasis}}
-  \label{fig:HBasisGraphs}
-  \includegraphics[width=.3\linewidth]{Basis/HBasis}
-  \vspace{-10pt}
-\end{figure}
 \begin{singlespace}
   \begin{equation}
+    \begin{alignat*}{3}
+
+      &[x \mapsto s]x &&= s && \\
+      &[x \mapsto s]y &&= y \qquad &&\text{als } y\neq x 
+      &[x \mapsto s](\lambda(y)t_1) &&= \lambda(y)[x \mapsto s]t_1 \qquad &&\text{als } y \neq x \text{ en   } y \not \in FV(s) \\
+      &[x \mapsto s](t_1 \; t_2)&&= ([x \mapsto s]t_1)\;([x \mapsto s]t_2) &&
+    \end{alignat*}
+
     \begin{aligned}
-      &h_{0,0}(t) = (1+2t)(1-t)^2 &&= \beta_0(t) + \beta_1(t) \\
-      &h_{1,0}(t) = t(1-t)^2 &&= \frac{\beta_1(t)}{3}\\
-      &h_{0,1}(t) = t^2(3-2t) &&= \beta_2(t) + \beta_3(t)\\
-      &h_{1,1}(t) = t^2(1-t) &&= \frac{-\beta_2(t)}{3}
+      &h_{0,0}(t) = (1+2t)(1-t)^2 = \beta_0(t) + \beta_1(t) \\
+      &h_{1,0}(t) = t(1-t)^2 = \frac{\beta_1(t)}{3}\\
+      &h_{0,1}(t) = t^2(3-2t) = \beta_2(t) + \beta_3(t)\\
+      &h_{1,1}(t) = t^2(1-t) = \frac{-\beta_2(t)}{3}
     \end{aligned}
   \end{equation}
   \begin{small}
-  i  \begin{itemize}[label=]
+    \begin{itemize}[label=]
       \item $h_{0,0}$: is function for the first point
       \item $h_{0,1}$: is function for the first derivative
       \item $h_{1,0}$: is function for the second point
@@ -279,9 +280,9 @@ for the derivatives.
 \end{singlespace}
 
 
-Another way to describe Hermite splines, as well as B\`ezier curves, is through matrices (\ref{eq:HMatrix}).
-These matrices are equivalent to the basis functions. The benefit of using matrices is that it is easier to
-change between different types of splines for different purposes. For example, if one were making a
+Another way to describe Hermite splines as well as B\`ezier curves is through matrices (\ref{eq:HMatrix}).
+These matrices are equivalent the basis functions. The benefit of using matrices is that it is easier to
+change between different types of splines for different purposes. For example if one were making a
 application they could pass in the basis matrix to generate Hermite, B\`ezier, Catmull-Rom, or other forms.
 
 \begin{figure}[h!]
@@ -313,48 +314,45 @@ application they could pass in the basis matrix to generate Hermite, B\`ezier, C
 \end{equation}
 
 \subsection{Application}
-Interpolated splines are useful for a host of different applications. Hermite splines
+Interpolating splines are useful for a host of different applications. Unlike B\`ezier curves, Hermite splines
 are not as ubiquitous, but they have more specific uses. They are often used for statistics since they can
 generate intermediate values between data points as well as being used for regression and filtering
 \citep{HRegression}. Hermite splines are also used for path generation for simple mobile or differential
-robots. In the study \cite{HMove}, they use genetic algorithms to optimize Hermite paths to simulate
-bipedal, tripedal, and \sorta{snake-like} motion. 
+robots. In the case of \citep{HMove} they use genetic algorithms to optimize Hermite paths to simulate
+bipedal, tripedal, and \say{snake-like} motion. One of the biggest uses of Hermite splines are wavelets
+\citep{HWavelets}.
 
 \begin{figure}[ht]
+  \label{fig:wavelet}
   \centering
   \caption{The different Types of Wavelets}
   \includegraphics[width=\linewidth]{wavelets}
-  \label{fig:waveletFig}
 \end{figure}
 
-One of the biggest uses of Hermite splines are wavelets \citep{HWavelets}. These are wavelets and not waves
-since they terminate and do not oscillate to infinity (figure~\ref{fig:waveletFig}). In signals processing,
-Fourier Transforms isolate the frequency and amplitude of a signal which includes all of the image. Wavelets
-allow one to find the local transformations such as edges or lines in an image. Most of the purely academic
-uses of
+These are wavelets because of how they are not infinite like sin waves. So in signal processing there are
+Fourier Transforms which isolates the frequency and amplitude of a signal which is the global view. Wavelets
+allow one to find the local transformations such as edges or blobs. Most of the purely academic uses of
 Hermite splines are in modeling different forms of wavelets or other signal analysis. For example, in
-\cite{HBioMed} they are using wavelets for edge detection as well as for modeling the blobs, or objects that
-make edges, to automatically analyze medical photos. As previously alluded to, these interpolating
-splines can be used for smoothing or filtering data. Hermite splines can also be used for interpolation
-between data points which can be used for filtering. So for the application of signals processing, splines
-can be used for generating data and cleaning it up.
+\citep{HBioMed} they are using wavelets for edge detection as well as for modeling the blobs, or objects that
+make said edges, to automatically analyze medical photos. As previously alluded to, these interpolating splines
+can be used for smoothing or filtering data. Hermite splines can be used to model the output of a wave
+\citep{HCardo} which is an inversion of the wavelets which take a spline and output data, these process can be
+reversed to map data to splines in signal processing.
 
 \section{Conclusion}
 B\`ezier and Hermite splines are just two examples in a sea of possible splines. These are two simple types
-that are useful for outlining the two archetypes of splines, interpolating and weighted, while still being
-computationally simple. However, their simplicity does not subtract from their functionality or abundance in
-real life applications. There are often \sorta{better} or more specialized splines for any given use case;
+that are useful for outlining the two archetypes, interpolating and weighted, while still being
+computationally simple. However, their simplicity does not subtract from their usefulness or abundance in
+real life applications.There are often \say{better} or more specialized splines for any given use case;
 however, that misses the point of their power and generality. The naively simple task of making an
 approximation of curve between points has much more depth than one can possibly cover. The simplicity and
-generality also explains why splines are everywhere.
+generality also explains how splines are everywhere.
 
 \newpage
 \bibliographystyle{apa}
 \bibliography{IA}
 \newpage
 \section{Appendix}
-\listoffigures
-
 \lstinputlisting[language=Python, label={lst:BBasis}, caption={Bernstein Basis Functions}]{code/BBasis.py}
 \newpage
 \lstinputlisting[language=Python, label={lst:bez}, caption={B\`ezier Curves}]{code/bez.py}
