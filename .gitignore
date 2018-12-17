@@ -1,0 +1,14 @@
+.DS_Store
+
+*.mypy_cache
+*__pycache__
+*.dvi
+*.bbl
+*.blg
+*.aux
+*.log
+*.gz
+*.toc
+*.bcf
+*.xml
+*.lof
