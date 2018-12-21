@@ -8,7 +8,7 @@ delta = 1
 
 # Simulation constants: descrete time and space
 dt = 0.001  # the change in time
-n = 15000  # number of iterations
+n = 20000  # number of iterations
 
 # Seed the space
 U = 1  # Population of Pray

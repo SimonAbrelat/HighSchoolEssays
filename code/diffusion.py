@@ -8,14 +8,10 @@ s = 100  # size of the matrix
 dx = 2/s  # Simulation speed/accuracy
 
 # Matrix initialization
-M = np.empty((s, s))
-M.fill(0)
-x, y = M.shape
+M = np.fill((s, s), 0.0)
 # Hotspot Seeding
 M[20:30, 45:50] = 90
 M[70:80, 45:50] = 90
-np.set_printoptions(precision=1)
-
 
 # Implementation of the decretized laplacian operator
 def laplacian(Z):
@@ -25,7 +21,6 @@ def laplacian(Z):
     Zright = Z[1:-1, 2:]
     Zcenter = Z[1:-1, 1:-1]
     return (Ztop + Zleft + Zbottom + Zright - (4 * Zcenter)) / dx**2
-
 
 # Iterations through PDE
 for _ in range(n):
