@@ -13,9 +13,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage[american]{babel}
 \usepackage[babel]{csquotes}
-\usepackage[backend=biber,style=apa,autocite=inline]{biblatex}
+\usepackage[%
+style=phys,%
+articletitle=false,biblabel=brackets,%
+chaptertitle=false,pageranges=false%
+]{biblatex}
 
-\DeclareLanguageMapping{english}{english-apa}
+%\DeclareLanguageMapping{english}{english-apa}
 \addbibresource{IA.bib}
 \defbibheading{bibliography}{\section{Bibliography}}
 \bibliography{IA}
@@ -83,7 +87,8 @@
 \pagenumbering{arabic}
 \newpage
 
-\section{}
+\section{TEST}
+This is some sample text \autocite{Lear71}
 
 \newpage
 \printbibliography{}
