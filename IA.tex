@@ -3,23 +3,26 @@
 \usepackage{parskip}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{gensymb}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{geometry}
 \usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{algorithm}
 \usepackage{subcaption}
 \usepackage{anyfontsize}
 \usepackage{indentfirst}
+\usepackage{algorithmic}
 \usepackage[utf8]{inputenc}
 \usepackage[american]{babel}
 \usepackage[babel]{csquotes}
-\usepackage[%
-style=phys,%
-articletitle=false,biblabel=brackets,%
-chaptertitle=false,pageranges=false%
-]{biblatex}
+\usepackage[style=phys,
+            articletitle=false,
+            biblabel=brackets,
+            chaptertitle=false,
+            pageranges=false]{biblatex}
 
-%\DeclareLanguageMapping{english}{english-apa}
 \addbibresource{IA.bib}
 \defbibheading{bibliography}{\section{Bibliography}}
 \bibliography{IA}
@@ -58,7 +61,7 @@ chaptertitle=false,pageranges=false%
 
 \lstset{style=scheme}
 
-\title{Pogo bitch}
+\title{Using Computer Simulations to Test the Viability of a Spring Powered Launcher}
 \author{Simon Abrelat}
 \date{May 2019}
 
@@ -87,14 +90,131 @@ chaptertitle=false,pageranges=false%
 \pagenumbering{arabic}
 \newpage
 
-\section{TEST}
-This is some sample text \autocite{Lear71}
+\section{Introduction}
+In the design process, there needs to be a way to vet interesting and alternative ideas. On my robotics team,
+one way to do this with computer simulations. To scale a 13 inch (33 cm) vertical step the idea of a spring
+powered launch was brought up, so its efficacy had to be determined. The idea was to angle the robot and have
+a pogo-inspired launcher spring out from the back of the robot. The goal of this simulation is to
+approximately test if this design possible, and, if its theoretically possible, are the materials reasonable.
 
-\newpage
+\subsection{Design Constraints}
+This robot is designed for the FIRST Robotics Competition (FRC), so there are a lot of rules that inform what
+is possible. There must be a padded bumper that is no more than 3 inch (7.6 cm) off of the ground. This
+greatly limits the angle we are able to tilt the robot, for this simulation a max angle of $50\degree$. There
+is also a weight limit of 150 lbs (69 kg). This weight will be used for the simulation to prove that the
+design can work in a variety of situations and is more consistent. There are space constraints, but they are
+not being factored in for this simulation since those are more design specific implementation details over
+physic constraints.
+
+\section{Simulation}
+This simulation has 2 sections: acceleration and flight. The acceleration uses the spring to force the robot
+up. The flight is the projectile motion of the robot in the air. Given the physical constraints, there are
+simulation constants like a weight of 69 kg and angle of $50\degree$.
+
+\subsection{Spring Acceleration}
+Acceleration has to be calculated from the force of the spring. The spring force is approximated by Hooke's
+Law (\ref{eq:hooke}). Hooke's Law states the force is proportional to the distance of compression of the
+spring. The slope of this proportion would then be the spring constant which is measured in Newtons per
+meter. So for each meter compressed the spring exerts that many Newtons of force. 
+
+\begin{singlespace}
+  \begin{equation}
+    \label{eq:hooke}
+    F_s = -kx
+  \end{equation}
+  \begin{small}
+    \begin{itemize}[label=]
+      \item $F_s$: Force of the spring, $N$
+      \item $k$: Spring constant, $\dfrac{N}{m}$
+      \item $x$: The displacement of the spring, $m$
+    \end{itemize}
+  \end{small}
+\end{singlespace}
+
+The force is then used to describe the acceleration using \poses{Newton} second law (\ref{eq:n2}). The
+vertical acceleration from the spring is then reduced by the force due to gravity giving the net acceleration
+on the object. This net force is described by equation \ref{eq:netforce}.
+
+\begin{singlespace}
+  \begin{equation}
+    \label{eq:n2}
+    \vec{F} = m \vec{a}
+  \end{equation}
+  \begin{small}
+    \begin{itemize}[label=]
+      \item $\vec{F}$: Force vector, $N$
+      \item $m$: Mass, $kg$
+      \item $\vec{a}$: Acceleration vector, $\dfrac{m}{s^2}$
+    \end{itemize}
+  \end{small}
+  \begin{equation}
+    \label{eq:netforce}
+    m a = -k x - m g
+  \end{equation}
+  \begin{small}
+    \begin{itemize}[label=]
+      \item $a$: Net acceleration, $\dfrac{m}{s^2}$
+      \item $k$: Spring constant, $\dfrac{N}{m}$
+      \item $m$: Mass, $kg$
+      \item $g$: Acceleration due to gravity, $9.81 \dfrac{m}{s^2}$
+    \end{itemize}
+  \end{small}
+\end{singlespace}
+
+The acceleration of the object decreases the distance which then decreases the force and the net force is
+decreased by gravity (\ref{eq:diffAcc}), full derivation in Appendix~\ref{ap:derivation}. This generates a 
+cyclical decay in force. For this simulation, this second degree differential equation would be approximated 
+using Euler's method.
+
+\begin{equation}
+  \label{eq:diffAcc}
+  \ddot{x} = \frac{-kx}{m} -g
+\end{equation}
+
+Equation~\ref{eq:diffAcc} is calculated by stepping through and solving the equation small steps at a time.
+For this, the equation gives you acceleration given a position, the acceleration determines the velocity
+which moves the position as described in Algorithm~\ref{alg:accSolver}.
+
+\begin{algorithm}
+\caption{Acceleration Solver}
+\begin{algorithmic} 
+\label{alg:accSolver}
+\REQUIRE $v, a = 0$
+\REQUIRE $g = 9.81$
+\REQUIRE $t = 0.001$
+\REQUIRE $x =$ starting displacement
+\REQUIRE $k =$ spring constant
+\WHILE{$x \geq 0$}
+\STATE $a \leftarrow \dfrac{-kx}{m} - g$
+\STATE $v \leftarrow v + a * t$
+\STATE $x \leftarrow x + v * t$
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+\newpage{}
 \printbibliography{}
 
-\newpage
+\newpage{}
 \section{Appendix}
 \listoffigures{}
 
+
+\begin{singlespace}
+\subsection*{Equation Derivation, Appendix~\ref{ap:derivation}}
+\label{ap:derivation}
+\begin{gather*}
+  F = ma \\
+  F = -kx \\
+  \sum F = -kx - mg \\
+  ma = -kx - mg \\
+  m\ddot{x} = -kx - mg \\
+  m(\ddot{x} + g) = -kx \\
+  \ddot{x} + g = \frac{-kx}{m} \\
+  \ddot{x} = \frac{-kx}{m} - g
+\end{gather*}
+\end{singlespace}
+
+\section*{Code}
+\lstinputlisting[language=Python, label={lst:springAcc}, caption={Spring Acceleration}]{code/spring.py}
 \end{document}

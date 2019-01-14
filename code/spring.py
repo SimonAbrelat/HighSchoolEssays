@@ -52,34 +52,3 @@ plt.plot(ta, xa)
 plt.plot(ta, va)
 plt.plot(ta, aa)
 plt.show()
-
-'''
-# Projectile data recording
-xp: float = 0  # projectile x
-yp: float = 0  # projectile y
-vv: float = 0  # verticle velocity
-vh: float = 0  # horizontal velocity
-xpa: List[float] = []  # projectile x
-ypa: List[float] = []  # projectile y
-
-vv = vm * sin(theta)
-vh = vm * cos(theta)
-print(vv, vh)
-
-
-def projectile():
-    global xp, yp, vv
-    xp += vh * dt
-    vv -= g * dt
-    yp += vv * dt
-
-
-while(yp >= 0):
-    projectile()
-    print(yp)
-    xpa.append(xp)
-    ypa.append(yp)
-
-plt.plot(xpa, ypa)
-plt.show()
-'''
