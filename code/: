@@ -26,11 +26,12 @@ def hookesAccAngle(x: float, k: float, m: float, t: float) -> float:
     return ((-k * x) / m) - (g * cos(t))
 
 def spring(x: float, k: float, m: float) -> float:
-    v: float = 0.0
+    v :float = 0.0
     while(x < 0):
         a = hookesAccAngle(x, k, m, theta)
         v += a * dt
         x += v * dt
+    x = 0
     return v
 
 def height(): return (v ** 2 * sin(theta) ** 2) / (2 * g)
@@ -41,16 +42,14 @@ def stepDistance(v: float):
     return ((v * cos(theta)) / g) *\
            ((v * sin(theta)) + sqrt(det))
 
-def isValid(x: float, k: float) -> bool:
+def isValid(x: float, k: float) -> int:
+    print(type(stepDistance(spring(x, k, m))))
     return -1 if stepDistance(spring(x, k, m)) == -1 else 1
 
-size: int = 2
+size: int = 100
+from numpy import fromfunction # generates matrix
 
-P = np.zeros((size, size))
-for i in range(size):
-    for j in range(size):
-        P[i][j] = isValid(i * -0.3, j * 15000)
-
+P = fromfunction(lambda x, y: isValid(x * .01, y * 200), (size, size))
 plt.imshow(P, cmap=plt.cm.coolwarm, interpolation='bilinear')
 plt.colorbar() # side colorbar for reference
 plt.show()
@@ -60,6 +59,6 @@ plt.show()
 #  while(h == -1):
     #  k += 10
     #  v = spring(x, k, m)
-    #  h = stepDistance(v)
+    #  h = stepDistance()
 
 #  print(h, k)

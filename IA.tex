@@ -90,14 +90,15 @@
 \pagenumbering{arabic}
 \newpage
 
-\section{Introduction}
+\section{Introduction} \label{sec:Introduction}
 In the design process, there needs to be a way to vet interesting and alternative ideas. On my robotics team,
 one way to do this with computer simulations. To scale a 13 inch (33 cm) vertical step the idea of a spring
 powered launch was brought up, so its efficacy had to be determined. The idea was to angle the robot and have
 a pogo-inspired launcher spring out from the back of the robot. The goal of this simulation is to
-approximately test if this design possible, and, if its theoretically possible, are the materials reasonable.
+approximately test if this design possible, and, if its theoretically possible, if the materials are
+reasonable.
 
-\subsection{Design Constraints}
+\subsection{Design Constraints} \label{sec:DesignConstraints}
 This robot is designed for the FIRST Robotics Competition (FRC), so there are a lot of rules that inform what
 is possible. There must be a padded bumper that is no more than 3 inch (7.6 cm) off of the ground. This
 greatly limits the angle we are able to tilt the robot, for this simulation a max angle of $50\degree$. There
@@ -106,12 +107,12 @@ design can work in a variety of situations and is more consistent. There are spa
 not being factored in for this simulation since those are more design specific implementation details over
 physic constraints.
 
-\section{Simulation}
+\section{Simulation} \label{Simulation}
 This simulation has 2 sections: acceleration and flight. The acceleration uses the spring to force the robot
 up. The flight is the projectile motion of the robot in the air. Given the physical constraints, there are
 simulation constants like a weight of 69 kg and angle of $50\degree$.
 
-\subsection{Spring Acceleration}
+\subsection{Spring Acceleration} \label{sec:SpringAcc}
 Acceleration has to be calculated from the force of the spring. The spring force is approximated by Hooke's
 Law (\ref{eq:hooke}). Hooke's Law states the force is proportional to the distance of compression of the
 spring. The slope of this proportion would then be the spring constant which is measured in Newtons per
@@ -162,7 +163,7 @@ on the object. This net force is described by equation \ref{eq:netforce}.
 \end{singlespace}
 
 The acceleration of the object decreases the distance which then decreases the force and the net force is
-decreased by gravity (\ref{eq:diffAcc}), full derivation in Appendix~\ref{ap:derivation}. This generates a 
+decreased by gravity (\ref{eq:diffAcc}), full derivation in Equation~\ref{eq:derivation}. This generates a 
 cyclical decay in force. For this simulation, this second degree differential equation would be approximated 
 using Euler's method.
 
@@ -192,6 +193,182 @@ which moves the position as described in Algorithm~\ref{alg:accSolver}.
 \end{algorithmic}
 \end{algorithm}
 
+\subsection{Projection Motion} \label{sec:ProjectileMotion}
+There are two different ways to simulate the projectile motion: iterative, formulaic. The iterative method
+uses a series of differential equations following the assumptions of projectile motion. The assumptions are
+the gravity pushes down on the vertical axis and there is no force opposing horizontal motion.
+
+\begin{singlespace}
+  \begin{equation}
+    \begin{split}
+      &\dot{x} = \cos(\theta) v \\
+      &\dot{y} = v_v \\
+      &\dot{v_v} = g \\
+    \end{split}
+  \end{equation}
+  \begin{small}
+    \begin{itemize}[label=]
+      \item $\theta$: initial angle
+      \item $v$: initial velocity
+      \item $v_v$: vertical velocity
+    \end{itemize}
+  \end{small}
+\end{singlespace}
+
+Much like the \poses{Hooke} equation solver, Algorithm~\ref{alg:accSolver}, the approximator for this motion
+uses \poses{Euler} method to iterate through time and accumulate toward the answer, as shown in
+Algorithm~\ref{alg:projSolver}. This just iterates the position using the velocity and the vertical 
+component of the velocity by the acceleration from gravity.
+
+\begin{algorithm}
+\caption{Projectile Motion Approximator}
+\begin{algorithmic} 
+\label{alg:projSolver}
+\REQUIRE $g = -9.81$
+\REQUIRE $t = 0.001$
+\REQUIRE $v =$ starting velocity
+\REQUIRE $\theta =$ starting angle
+\REQUIRE $v_v = \sin(\theta) v$
+\WHILE{$x \geq 0$}
+\STATE $y \leftarrow  y + \cos(\theta) v * t$
+\STATE $v_v \leftarrow  v_v + g * t$
+\STATE $x \leftarrow  y + v_v * t$
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+This method is similar to the prior method used in Algorithm~\ref{alg:accSolver}. The problem with it is that
+not only the value accumulates but any error. The benefit is that you get greater control and visibility into
+the program, as well as the more intuitive explanation because you need to describe that happens in a single
+moment. In more complex simulations, this method is better because it allows for drag and rotational forces,
+but for this proof-of-concept those are not required. That means that we should use the formulaic approach.
+
+The problem with the formulaic approach is with the step. That step cuts off the motion of the object sooner
+than expecting and trying to get close to an optimal angle is difficult. This means you need additions to the
+general projectile motion equations, and it looses some of its generality in the process. Another problem is
+that if the pogo does not behave as the equations predict invalid answers are returned. In normal projectile
+motion, the hight is governed in Equation~\ref{eq:progHeight}, and the distance is 
+Equation~\ref{eq:progDistance}. When incorporating the step, the new distance equation is
+Equation~\ref{eq:progStepDistance}.
+
+\begin{singlespace}
+  \begin{equation}
+    \label{eq:progHeight}
+    y = \frac{v_o^2 \sin^2(\phi)}{2g} \\
+  \end{equation}
+  \begin{equation}
+    \label{eq:progDistance}
+    x = \frac{v_o^2 \sin(2\phi)}{g} \\
+  \end{equation}
+  \begin{equation}
+    \label{eq:progStepDistance}
+    x = (\frac{v_o \cos(\phi)}{g})[v_o \sin(\phi) + \sqrt{v_o^2 \sin^2(\phi)-2gz}\,]
+  \end{equation}
+  \begin{small}
+    \begin{itemize}[label=]
+      \item $v_o$: initial velocity
+      \item $\phi$: initial angle
+      \item $z$: step height
+    \end{itemize}
+  \end{small}
+\end{singlespace}
+
+\section{Results} \label{sec:Results}
+
+The cyclical relationship between the acceleration and displacement, described in 
+Section~\ref{sec:SpringAcc}, makes sense because of simple harmonic motion. For the purposes of a single
+action pogo, the simulation ends when the displacement is equal to zero,
+Figure~\ref{fig:short}, but this is only a section of simple harmonic motion, Figure~\ref{fig:shm}.
+
+\begin{figure}[h]
+  \caption{Simple Harmonic Motion}
+  \centering
+  \begin{subfigure}[b]{.35\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke7000-0_3.png}
+    \caption{Simulation to $x=0$}
+    \label{fig:short}
+  \end{subfigure}
+  \begin{subfigure}[b]{.35\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke_shm.png}
+    \caption{Simulation to $t=2$}
+    \label{fig:shm}
+  \end{subfigure}
+\end{figure}
+
+Given the parameters shown above, a mass of  69 kg, spring constant of 7000 N/m, and 
+displacement of -.3 m, the robot would be launched 0.465 m, or around 18.3 inches, if vertical. Then at an
+angle of $50\degree$ the robot is able to fly 0.127 m vertically and .506 m horizontally. To find the lowest
+spring constant, the spring constant would increase by some increment until the robot gets launched 0.33 m
+vertically. The lowest spring constant candidate is $13120 \pm 10$ N/m and it would launch the robot .678 m
+horizontally. Then to include some buffer, if the step height were 15 inches, or .38 m, the spring constant 
+would need to be $14630 \pm 10$ N/m and it would travel .780 m horizontally.
+
+TODO: GRAPH PROJECTILE MOTION EXAMPLE
+
+For the possible mechanism, it would be best to have the longest throw as possible. When the displacement is
+increased, but your time to $x=0$ remains the same, Fig~\ref{fig:varyingDisplacement}. That means that the
+overall power is more efficiently added by increasing the displacement. When the spring constant increases
+the time decreases, but the force increases, shown in Fig~\ref{fig:varyingConstant}.
+
+\begin{figure}[h]
+  \caption{Varying Displacement}
+  \label{fig:varyingDisplacement}
+  \centering
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke7000-0_3.png}
+    \caption{$x=-0.3$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke7000-0_4.png}
+    \caption{$x=-0.4$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke7000-0_5.png}
+    \caption{$x=-0.5$}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[h]
+  \caption{Varying Spring Constant}
+  \label{fig:varyingConstant}
+  \centering
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke7000-0_3.png}
+    \caption{$x=-0.3$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke8000-0_3.png}
+    \caption{$x=-0.4$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{Hooke/hooke9000-0_3.png}
+    \caption{$x=-0.5$}
+  \end{subfigure}
+\end{figure}
+
+This result is intuitive especially when looking at real pogo sticks. They have relatively low weight springs
+but they run the length of the stick, so they have a very long throw. The problem is that we would have at
+most 18 inches of throw. The springs that can launch the robot given this relatively short displacement would
+take up too much space to make sense.
+
+\section{Evaluation}
+The accuracy and precision of this simulation have much to be desired. The model used is overly simplistic
+since it does not take slippage on the ground, deviance from Hooke's law, and other inefficiencies.The model 
+presented to the team to prove if this mechanism was viable was the same as the one presented but half of the
+power was lost to mechanical inefficiencies. Beyond an optimistic model, the numerical approach for solving
+these equations yields, at least for me, a more intuitive way of describing the mechanics at the cost of
+accuracy. The way to mitigate error would be to decrease the change in time, or increase the number of
+iterations, which eventually accumulate significant floating point error. For computers, decimal numbers are
+hard to define and when doing successive operations on decimal numbers will eventually cause a small error
+that propagates through the system. Because of this, computer simulations will never be perfect
+representations of reality, but they can get very close.
+
+\section{Conclusion}
+The design proposed is preposterous. It is mathematically possible, but for all intents and purposes entirely
+unfeasible. The power of the springs and their required range of motion would take up the majority of the
+robots internal volume, and the tension these springs would be under would pose a major safety risk. Even if
+we made this robot it would not be allowed to play
+
 \newpage{}
 \printbibliography{}
 
@@ -201,18 +378,20 @@ which moves the position as described in Algorithm~\ref{alg:accSolver}.
 
 
 \begin{singlespace}
-\subsection*{Equation Derivation, Appendix~\ref{ap:derivation}}
-\label{ap:derivation}
-\begin{gather*}
-  F = ma \\
-  F = -kx \\
-  \sum F = -kx - mg \\
-  ma = -kx - mg \\
-  m\ddot{x} = -kx - mg \\
-  m(\ddot{x} + g) = -kx \\
-  \ddot{x} + g = \frac{-kx}{m} \\
-  \ddot{x} = \frac{-kx}{m} - g
-\end{gather*}
+\subsection*{Vertical Pogo Equation Derivation}
+\begin{equation}
+  \label{eq:derivation}
+  \begin{split}
+    F &= ma \\
+    F &= -kx \\
+    \sum F &= -kx - mg\cos(\theta) \\
+    ma &= -kx - mg\cos(\theta) \\
+    m\ddot{x} &= -kx - mg\cos(\theta) \\
+    m(\ddot{x} + g\cos(\theta)) &= -kx \\
+    \ddot{x} + g\cos(\theta) &= \frac{-kx}{m} \\
+    \ddot{x} &= \frac{-kx}{m} - g\cos(\theta)
+  \end{split}
+\end{equation}
 \end{singlespace}
 
 \section*{Code}
