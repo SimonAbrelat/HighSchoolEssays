@@ -109,8 +109,9 @@ physic constraints.
 
 \section{Simulation} \label{Simulation}
 This simulation has 2 sections: acceleration and flight. The acceleration uses the spring to force the robot
-up. The flight is the projectile motion of the robot in the air. Given the physical constraints, there are
-simulation constants like a weight of 69 kg and angle of $50\degree$.
+up. The flight is the projectile motion of the robot in the air. Given the design constraints
+(Section~\ref{sec:DesignConstraints}), there are simulation constants like a weight of 69 kg and angle of 
+$50\degree$.
 
 \subsection{Spring Acceleration} \label{sec:SpringAcc}
 Acceleration has to be calculated from the force of the spring. The spring force is approximated by Hooke's
@@ -172,9 +173,10 @@ using Euler's method.
   \ddot{x} = \frac{-kx}{m} -g
 \end{equation}
 
-Equation~\ref{eq:diffAcc} is calculated by stepping through and solving the equation small steps at a time.
-For this, the equation gives you acceleration given a position, the acceleration determines the velocity
-which moves the position as described in Algorithm~\ref{alg:accSolver}.
+Equation~\ref{eq:diffAcc} is calculated by solving the equation in repeating small steps. For this, the 
+equation gives you acceleration given a position, the acceleration determines the velocity which moves the 
+position as described in Algorithm~\ref{alg:accSolver}.
+
 
 \begin{algorithm}
 \caption{Acceleration Solver}
@@ -187,14 +189,14 @@ which moves the position as described in Algorithm~\ref{alg:accSolver}.
 \REQUIRE $k =$ spring constant
 \WHILE{$x \geq 0$}
 \STATE $a \leftarrow \dfrac{-kx}{m} - g$
-\STATE $v \leftarrow v + a * t$
-\STATE $x \leftarrow x + v * t$
+\STATE $v \leftarrow v + a * \Delta t$
+\STATE $x \leftarrow x + v * \Delta t$
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
 
 \subsection{Projection Motion} \label{sec:ProjectileMotion}
-There are two different ways to simulate the projectile motion: iterative, formulaic. The iterative method
+There are two different ways to simulate the projectile motion: iterative and formulaic. The iterative method
 uses a series of differential equations following the assumptions of projectile motion. The assumptions are
 the gravity pushes down on the vertical axis and there is no force opposing horizontal motion.
 
@@ -217,8 +219,10 @@ the gravity pushes down on the vertical axis and there is no force opposing hori
 
 Much like the \poses{Hooke} equation solver, Algorithm~\ref{alg:accSolver}, the approximator for this motion
 uses \poses{Euler} method to iterate through time and accumulate toward the answer, as shown in
-Algorithm~\ref{alg:projSolver}. This just iterates the position using the velocity and the vertical 
-component of the velocity by the acceleration from gravity.
+Algorithm~\ref{alg:projSolver}. \poses{Euler} method is a way to solve differential or integral equations by
+summing the output of your equation by some arbitrarily small $\Delta t$, this gets the \sorta{area under
+the curve}. Then the algorithm iterates the position using the velocity and the vertical component of the 
+velocity by the acceleration from gravity.
 
 \begin{algorithm}
 \caption{Projectile Motion Approximator}
@@ -230,25 +234,24 @@ component of the velocity by the acceleration from gravity.
 \REQUIRE $\theta =$ starting angle
 \REQUIRE $v_v = \sin(\theta) v$
 \WHILE{$x \geq 0$}
-\STATE $y \leftarrow  y + \cos(\theta) v * t$
-\STATE $v_v \leftarrow  v_v + g * t$
-\STATE $x \leftarrow  y + v_v * t$
+\STATE $y \leftarrow  y + \cos(\theta) v * \Delta t$
+\STATE $v_v \leftarrow  v_v + g * \Delta t$
+\STATE $x \leftarrow  y + v_v * \Delta t$
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
 
 This method is similar to the prior method used in Algorithm~\ref{alg:accSolver}. The problem with it is that
-not only the value accumulates but any error. The benefit is that you get greater control and visibility into
+not only the value accumulates but any error. The benefit is greater control and visibility into
 the program, as well as the more intuitive explanation because you need to describe that happens in a single
 moment. In more complex simulations, this method is better because it allows for drag and rotational forces,
 but for this proof-of-concept those are not required. That means that we should use the formulaic approach.
-
-The problem with the formulaic approach is with the step. That step cuts off the motion of the object sooner
-than expecting and trying to get close to an optimal angle is difficult. This means you need additions to the
-general projectile motion equations, and it looses some of its generality in the process. Another problem is
-that if the pogo does not behave as the equations predict invalid answers are returned. In normal projectile
-motion, the hight is governed in Equation~\ref{eq:progHeight}, and the distance is 
-Equation~\ref{eq:progDistance}. When incorporating the step, the new distance equation is
+The problem with the formulaic approach is with the vertical step which cuts off the motion of the object
+sooner than expecting and trying to get close to an optimal angle is difficult. This means you need additions
+to the general projectile motion equations, and it looses some of its generality in the process. Another
+problem is that if the pogo does not behave as the equations predict, invalid answers are returned. In normal
+projectile motion, the hight is governed in Equation~\ref{eq:progHeight}, and the distance is 
+Equation~\ref{eq:progDistance}. When incorporating the step, the new distance equation is 
 Equation~\ref{eq:progStepDistance}.
 
 \begin{singlespace}
@@ -296,17 +299,15 @@ Figure~\ref{fig:short}, but this is only a section of simple harmonic motion, Fi
 \end{figure}
 
 Given the parameters shown above, a mass of  69 kg, spring constant of 7000 N/m, and 
-displacement of -.3 m, the robot would be launched 0.465 m, or around 18.3 inches, if vertical. Then at an
+displacement of -.3 m, the robot would be launched 0.465 m, or around 18.3 inches, if vertical. Then, at an
 angle of $50\degree$ the robot is able to fly 0.127 m vertically and .506 m horizontally. To find the lowest
 spring constant, the spring constant would increase by some increment until the robot gets launched 0.33 m
 vertically. The lowest spring constant candidate is $13120 \pm 10$ N/m and it would launch the robot .678 m
-horizontally. Then to include some buffer, if the step height were 15 inches, or .38 m, the spring constant 
+horizontally. Then to include a buffer, if the step height were 15 inches, or .38 m, the spring constant 
 would need to be $14630 \pm 10$ N/m and it would travel .780 m horizontally.
 
-TODO: GRAPH PROJECTILE MOTION EXAMPLE
-
 For the possible mechanism, it would be best to have the longest throw as possible. When the displacement is
-increased, but your time to $x=0$ remains the same, Fig~\ref{fig:varyingDisplacement}. That means that the
+increased, but time to $x=0$ remains the same, Fig~\ref{fig:varyingDisplacement}. That means that the
 overall power is more efficiently added by increasing the displacement. When the spring constant increases
 the time decreases, but the force increases, shown in Fig~\ref{fig:varyingConstant}.
 
@@ -352,22 +353,22 @@ most 18 inches of throw. The springs that can launch the robot given this relati
 take up too much space to make sense.
 
 \section{Evaluation}
-The accuracy and precision of this simulation have much to be desired. The model used is overly simplistic
-since it does not take slippage on the ground, deviance from Hooke's law, and other inefficiencies.The model 
+The accuracy and precision of this simulation could be improved. The model used is overly simplistic
+since it does not take slippage on the ground, deviance from Hooke's law, and other inefficiencies. The model
 presented to the team to prove if this mechanism was viable was the same as the one presented but half of the
 power was lost to mechanical inefficiencies. Beyond an optimistic model, the numerical approach for solving
 these equations yields, at least for me, a more intuitive way of describing the mechanics at the cost of
 accuracy. The way to mitigate error would be to decrease the change in time, or increase the number of
 iterations, which eventually accumulate significant floating point error. For computers, decimal numbers are
-hard to define and when doing successive operations on decimal numbers will eventually cause a small error
-that propagates through the system. Because of this, computer simulations will never be perfect
+difficult to define and when doing successive operations on decimal numbers will eventually cause a small
+error that propagates through the system. Because of this, computer simulations will never be perfect
 representations of reality, but they can get very close.
 
 \section{Conclusion}
 The design proposed is preposterous. It is mathematically possible, but for all intents and purposes entirely
 unfeasible. The power of the springs and their required range of motion would take up the majority of the
 robots internal volume, and the tension these springs would be under would pose a major safety risk. Even if
-we made this robot it would not be allowed to play
+we made this robot it would not be allowed to play.
 
 \newpage{}
 \printbibliography{}
@@ -378,7 +379,7 @@ we made this robot it would not be allowed to play
 
 
 \begin{singlespace}
-\subsection*{Vertical Pogo Equation Derivation}
+\subsection*{Pogo Equation Derivation}
 \begin{equation}
   \label{eq:derivation}
   \begin{split}
@@ -396,4 +397,7 @@ we made this robot it would not be allowed to play
 
 \section*{Code}
 \lstinputlisting[language=Python, label={lst:springAcc}, caption={Spring Acceleration}]{code/spring.py}
+\lstinputlisting[language=Python, label={lst:projForm}, caption={Formulatic Projectile Motion}]
+{code/projectileFormulaic.py}
+\lstinputlisting[language=Python, label={lst:pogo}, caption={Full Pogo Code}]{code/pogo.py}
 \end{document}
