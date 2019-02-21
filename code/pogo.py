@@ -41,7 +41,7 @@ def stepDistance(v: float):
     return ((v * cos(theta)) / g) *\
            ((v * sin(theta)) + sqrt(det))
 
-def isValid(x: float, k: float) -> bool:
+def isValid(x: float, k: float) -> float:
     return -1 if stepDistance(spring(x, k, m)) == -1 else 1
 
 size: int = 2
@@ -54,12 +54,3 @@ for i in range(size):
 plt.imshow(P, cmap=plt.cm.coolwarm, interpolation='bilinear')
 plt.colorbar() # side colorbar for reference
 plt.show()
-#  v = spring(x, k, m)
-#  print(hookesAcc(x, k, m), hookesAccAngle(x, k, m, rad(00)))
-#  print(height(), distance())
-#  while(h == -1):
-    #  k += 10
-    #  v = spring(x, k, m)
-    #  h = stepDistance(v)
-
-#  print(h, k)

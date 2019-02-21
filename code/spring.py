@@ -9,12 +9,12 @@ dt: float = 1e-3  # time between physics iterations
 
 # Physics Constants
 m: float = 69  # mass: kg
-k: float = 9000  # spring constant: N/m
+k: float = 1000  # spring constant: N/m
 g: float = 9.81  # gravitational accel: m/s^2
 theta: float = rad(90)  # the angle the robot luaches at
 
 # Spring data recording
-x: float = -0.3 # inital compression
+x: float = -0.05 # inital compression
 v: float = 0  # initial velocity
 ta: List[float] = []  # time
 xa: List[float] = []  # position
@@ -34,23 +34,23 @@ def hookesAccAngle(x: float, k: float, m: float, t: float) -> float:
 def spring(x: float, k: float, m: float) -> float:
     global ta, xa, va, aa, v
     i = 0
+    w:float = 0
     while(x < 0):
         i += 1
         a = hookesAccAngle(x, k, m, theta)
         v += a * dt
         x += v * dt
-
+        w += m * a * (v*dt)
         t = i * dt
 
         ta.append(t)
         xa.append(x)
         va.append(v)
         aa.append(a)
-    return (v)
+    return (w)
 
-v = spring(x, k, m)
-print(ta[-1])
-plt.plot(ta, xa, label="Displacement")
+#  print(ta[-1])
+ plt.plot(ta, xa, label="Displacement")
 plt.plot(ta, va, label="Velocity")
 plt.plot(ta, aa, label="Acceleration")
 plt.legend()

@@ -217,7 +217,7 @@ the gravity pushes down on the vertical axis and there is no force opposing hori
   \end{small}
 \end{singlespace}
 
-Much like the \poses{Hooke} equation solver, Algorithm~\ref{alg:accSolver}, the approximator for this motion
+Much like the \poses{Hooke} equation solver, Algorithm~\ref{alg:accSolver}, the approximation for this motion
 uses \poses{Euler} method to iterate through time and accumulate toward the answer, as shown in
 Algorithm~\ref{alg:projSolver}. \poses{Euler} method is a way to solve differential or integral equations by
 summing the output of your equation by some arbitrarily small $\Delta t$, this gets the \sorta{area under
@@ -225,7 +225,7 @@ the curve}. Then the algorithm iterates the position using the velocity and the 
 velocity by the acceleration from gravity.
 
 \begin{algorithm}
-\caption{Projectile Motion Approximator}
+\caption{Projectile Motion Approximation}
 \begin{algorithmic} 
 \label{alg:projSolver}
 \REQUIRE $g = -9.81$
@@ -352,17 +352,63 @@ but they run the length of the stick, so they have a very long throw. The proble
 most 18 inches of throw. The springs that can launch the robot given this relatively short displacement would
 take up too much space to make sense.
 
+\begin{figure}[h]
+  \caption{Work given variables}
+  \label{fig:workChanges}
+  \centering
+  \begin{subfigure}[b]{.45\linewidth}
+    \includegraphics[width=\linewidth]{displacementRegress.png}
+    \caption{Displacement}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45\linewidth}
+    \includegraphics[width=\linewidth]{springRegress.png}
+    \caption{Spring Constant}
+  \end{subfigure}
+\end{figure}
+\newpage
+Fig~\ref{fig:workChanges} shows the linear relationship between displacement and work done as well as between
+the spring constant and the square root of the work. The $R^2$ value for the displacement is 0.997 showing a
+clear linear relationship and the slope of -9.45 shows that displacement greatly affects the work. $R^2$ for
+work is a little lower at .994, but still very linear. The more interesting number is the slope which is
+$1.75*10^{-3}$ which shows that there is a weak connection between the spring constant and the work. This
+analysis of Hooke's law backs up the engineering solution described earlier. Work was chosen for this
+comparison since the important value is the total acceleration or force that is applied over the range of
+motion. For the displacement calculations, the spring constant was held at 1000 N/m, and for the spring
+constant calculations, the displacement was held at -.3 meters. The work was calculated by numerically
+integrating the acceleration of the object times the mass times the change is position of velocity,
+Equation(\ref{eq:workIntegral}).
+
+\begin{singlespace}
+\begin{equation}
+  \label{eq:workIntegral}
+  \int_{0}^{s} m a dx
+\end{equation}
+\begin{small}
+  \begin{itemize}[label=]
+    \item $s$: displacement
+    \item $dx$: change in position or velocity
+  \end{itemize}
+\end{small}
+\end{singlespace}
+
 \section{Evaluation}
 The accuracy and precision of this simulation could be improved. The model used is overly simplistic
-since it does not take slippage on the ground, deviance from Hooke's law, and other inefficiencies. The model
-presented to the team to prove if this mechanism was viable was the same as the one presented but half of the
-power was lost to mechanical inefficiencies. Beyond an optimistic model, the numerical approach for solving
-these equations yields, at least for me, a more intuitive way of describing the mechanics at the cost of
-accuracy. The way to mitigate error would be to decrease the change in time, or increase the number of
-iterations, which eventually accumulate significant floating point error. For computers, decimal numbers are
-difficult to define and when doing successive operations on decimal numbers will eventually cause a small
+since it does not take slippage on the ground, deviance from Hooke's law, friction, wear, and other
+inefficiencies. Such inefficiencies would mean that this simulation overestimates the projectile motion. The
+model presented to the team to prove if this mechanism was viable was the previously described system but
+half of the force was lost to mechanical inefficiencies. Beyond an optimistic model, the numerical approach
+for solving these equations yields, at least for me, a more intuitive way of describing the mechanics at the
+cost of accuracy. The way to mitigate error would be to decrease the change in time, or increase the number
+of iterations, which eventually accumulate significant floating point error. For computers, decimal numbers
+are difficult to define and when doing successive operations on decimal numbers will eventually cause a small
 error that propagates through the system. Because of this, computer simulations will never be perfect
 representations of reality, but they can get very close.
+
+This investigation also addresses major safety concerns. To actually test a mechanism of this sort would
+require very large and stiff springs holding a lot of energy. Making a physical prototype of this design 
+would be infeasible for a number of reasons: cost, time, and safety. There are also concerns about breaking
+the field with this design. That means that this idea is dangerous due to the materials used, the tension of
+the springs, and as well as the problems inherent in rapidly accelerating a 69 kg object.
 
 \section{Conclusion}
 The design proposed is preposterous. It is mathematically possible, but for all intents and purposes entirely
