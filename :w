@@ -1,7 +1,5 @@
 \documentclass[12pt, letterpaper]{article}
-\usepackage{xcolor}
 \usepackage{parskip}
-\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{setspace}
@@ -18,18 +16,11 @@
 \bibliography{IA}
 \renewbibmacro*{cite:ibid}{\printtext[bibhyperref]{\bibstring[\mkibid]{ibidem}}}
 
+% \usepackage{fnpct}
+% \AdaptNoteOpt\footcite\multfootcite
+
 \geometry{letterpaper, portrait, margin=1in}
 \graphicspath{{./imgs/}}
-
-\definecolor{url}{HTML}{4682B4}
-\definecolor{cite}{HTML}{36648B}
-\definecolor{link}{HTML}{344152}
-\hypersetup{
-  colorlinks=true,
-  linkcolor=link,
-  urlcolor=url,
-  citecolor=cite,
-}
 
 \title{Media and its Role in the Development and Downfall of Aum Shinriky\=o}
 \author{Simon Abrelat}
@@ -73,15 +64,15 @@ just think about the siege of the Branch Divisions at Waco, Texas, the mass murd
 the Solar Temple, and Jonestown. Cults get violent when there practices get brought to the light. So, to
 what extent can the popularity and the downfall of Aum Shinriky\=o be attributed to the media?
 
-\subsection{\citetitle{watanabe_reactions_1997}}
+\subsection{\citetitle{manabu_reactions_1997}}
 \say{Reactions to the Aum Affair: The Rise of the \sorta{Anti-Cult} Movement in Japan.} is an essay is based
 on a paper presented at the annual meeting of American Academy of Religion in 1996
-\footcite{watanabe_reactions_1997}. It
+\footcite{manabu_reactions_1997}. It
 was published in the 21\textsuperscript{st} .Volume of the annual Bulletin for the Nanzan Institute for
 Religion and Culture. This separates the \say{Aum Affair}, the time between being approved as a religious
 institution and the gas attacks, into four different periods.Th  first period was as it budded into its
 current form, the second is the beginning of negative press, the third is a time were \say{intellectuals 
-  \footcite[33]{watanabe_reactions_1997} reevaluated} Aum Shinriky\=o, and finally, the forth is the gas attacks to there downfall. This resource is valuable because of how it tracks the criticism of the cult and
+\footcite[33]{manabu_reactions_1997} reevaluated} Aum Shinriky\=o, and finally, the forth is the gas attacks to there downfall. This resource is valuable because of how it tracks the criticism of the cult and
 they way Aum Shinriky\=o responded. Their typical response being murder. This paper showed the causal
 relationship between the level of criticism and violence which led to their downfall. The main issue with
 this paper is that it does not explain the media practices used by Aum Shinriky\=o, the cultural context, or
@@ -182,8 +173,11 @@ that, there are some open Aum Anime \footcite{noauthor_aum_nodate}\textsuperscri
     \includegraphics[width=\linewidth]{flyer.png}
     \caption{Recruitment Flyer}
   \end{subfigure}
+  \begin{subfigure}[b]{.9\linewidth}
+    \includegraphics[width=\linewidth]{harumagedon.png}
+    \caption{Harumagedon}
+  \end{subfigure}
 \end{figure}
-
 
 \begin{figure}[h]
   \caption{Harumagedon}
@@ -194,51 +188,8 @@ that, there are some open Aum Anime \footcite{noauthor_aum_nodate}\textsuperscri
   \end{subfigure}
 \end{figure}
 
-Figure \ref{fig:harumagedon} and \ref{fig:aumManga1} are examples of Aum publications in three different
-styles of Manga. These types of materials emphasize \poses{Asahara} powers like Figure \ref{fig:aumManga1}a
-which is a section form their story, My Guru, where they test is body for resistance, and, strangely, his 
-body has none. In \citetitle{noauthor_aum_nodate} Asahara is shown connecting to others spiritually,
-astral traveling, and levitating with a sideshow of pictures of Asahara at the end. The second video,
-\citetitle{noauthor_aum_nodate-1}, is a story of two naked people akin to Adam and Eve interspersed with
-strange images of cities and fields of grain. The video is in Japanese without subtitles, so without
-translation, the most that can be draw from that video is the clear biblical allusion.
-
-\subsection{Decline}
-The breakdown of Aum can be stated in thought of in four stages according to researcher Manabu Watanabe
-\footcite{watanabe_reactions_1997}. 
-\subsubsection{1\textsuperscript{st} Stage: Development (1984-1989)}
-The first stage was the formation from Aum Shinriky\=o from his original
-Yoga group \textit{Aum Shinsen no Kai}. This phase is before they have received any major attention as a
-religious organization. 
-
-\subsubsection{2\textsuperscript{nd} Stage: First Contact (1989-1990)}
-The second stage was the period were major criticisms started to arise. There first major media
-exposure was in the \textit{Sunday Mainichi} through a seven article series called \say{The Insanity of Aum
-  Shinriky\=o} in September of 1989 \footcite[35]{watanabe_reactions_1997}. This media attention had started
-just after they got their religious cooperation distinction. On October  2\textsuperscript{nd}, they
-published a series of interviews with six families that claimed that Aum had stolen their kid from them, not
-kidnapped but brainwashed \footcite[184]{hardacre_aum_2007}. After these stories came out, the families of
-Aum monks started to band together into the Association of Aum Shinriky\=o Victims under the lawyer Sakamoto
-Tsutsum. There was previously the Defense Counsel for Countermeasures to Damages from Aum Shinriky\=o lead by
-Sakamoto which got absorbed into this new association. Sakamoto and his family disappeared on November 
-4\textsuperscript{th} and assumed dead. Later, in September 1995, It was confirmed they were killed by Aum
-followers and their bodies were recovered. Beyond being the groups first killings, this event was important
-since it was the first use of Poa justified killings, a hallmark of Aum 
-\footcite[89]{watanabe_religion_1998}. To add insult to injury, they bought large plots of land in small
-villages around Kamikuishiki-mura in 1990. Similar to other communes like Rajneeshpuram for Osho, the locals
-were
-unhappy with these communes and large communities suddenly converging on their towns. The Association of Aum
-Shinriky\=o Victims also came in and helped the locals voice anti-Aum sentiments. Another aspect of them
-bursting onto the scene was their attempt to get elected \footcite[187]{hardacre_aum_2007}. In February 1990,
-Asahara and twenty four other leaders inside Aum entered the general election under the Supreme Truth Party,
-created by Aum for this purpose, and all of their candidates failed. This sparked even greater distrust of
-the Japanese government.
-
-
-
 \newpage
 \printbibliography{}
 \newpage
 \section*{Appendix}
-\listoffigures{}
 \end{document}
